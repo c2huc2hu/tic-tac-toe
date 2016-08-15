@@ -55,6 +55,7 @@ class Board
 		return false
 
 	playAt: (index) ->
+		return if @board[index]
 		@pastMoves.push index
 		@board[index] = @curPlayer
 		@curPlayer = @curPlayer % 2 + 1
@@ -80,7 +81,11 @@ class Board
 
 		@infoElem.textContent = "Player #{@curPlayer}'s turn"
 		@infoElem.textContent = "Player #{@curWinner} has won" if @curWinner
-		@infoElem.style.setProperty 'color', PLAYER_COLORS[(@curWinner or @curPlayer) - 1]
+		@infoElem.setAttribute 'player', @curWinner or @curPlayer
+		if not (@board.some (x) -> x == 0)
+			@infoElem.textContent = "Cat's game"
+			@infoElem.setAttribute 'player', 0
+
 
 b = new Board document.getElementById('board'), document.getElementById('info'), document.getElementById('undo')
 b.render()

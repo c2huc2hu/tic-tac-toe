@@ -102,6 +102,9 @@
     };
 
     Board.prototype.playAt = function(index) {
+      if (this.board[index]) {
+        return;
+      }
       this.pastMoves.push(index);
       this.board[index] = this.curPlayer;
       this.curPlayer = this.curPlayer % 2 + 1;
@@ -133,7 +136,13 @@
       if (this.curWinner) {
         this.infoElem.textContent = "Player " + this.curWinner + " has won";
       }
-      return this.infoElem.style.setProperty('color', PLAYER_COLORS[(this.curWinner || this.curPlayer) - 1]);
+      this.infoElem.setAttribute('player', this.curWinner || this.curPlayer);
+      if (!(this.board.some(function(x) {
+        return x === 0;
+      }))) {
+        this.infoElem.textContent = "Cat's game";
+        return this.infoElem.setAttribute('player', 0);
+      }
     };
 
     return Board;

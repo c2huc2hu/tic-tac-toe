@@ -26,3 +26,15 @@
 	border-width: 3px;
 	border-color: yellow;
 }
+
+div[player='0'] {
+	color: grey;
+}
+
+div[player='1'] {
+	color: blue;
+}
+
+div[player='2'] {
+	color: red;
+}
