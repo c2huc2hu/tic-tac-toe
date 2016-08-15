@@ -1,0 +1,6 @@
+
+# use coffeescript instead
+*.js
+
+# use jade instead
+*.html
