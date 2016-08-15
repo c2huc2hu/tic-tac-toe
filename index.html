@@ -1,0 +1,28 @@
+<style>#board {
+	height: 500px;
+	width: 500px;
+	position: relative;
+	padding: 0;
+	margin: 20px;
+}
+
+.square {
+	list-style: none;
+	display: inline-block;
+	height: calc(33.33333% - 6px);  /* have to account for border */
+	width: calc(33.3333% - 6px);
+	border: solid 3px grey;
+}
+
+.square[player='1'] {
+	background-color: blue;
+}
+
+.square[player='2'] {
+	background-color: red;
+}
+
+.square.prev {
+	border-width: 3px;
+	border-color: yellow;
+}</style><h1>Tic Tac Toe App</h1><div id="info"></div><button id="undo">Undo</button><ul id="board"></ul><script src="app.js"></script>
