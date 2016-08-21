@@ -1,5 +1,8 @@
 # tic tac toe player for utek. this is the main script
-# Util functions
+SIDE_LENGTH = 3
+BOARD_SIZE = SIDE_LENGTH ** 2
+
+## Util functions ##
 
 # Max and min of array
 max = (arr) ->
@@ -48,18 +51,18 @@ checkWin = (arr) ->
 	# note that we exclude when the 'winner' is empty cells because if (0) doesn't evaluate
 	# note the abuse of the assignment operator
 	for i in [0..2]
-		return winner if winner = same arr, (x, j) -> j % 3 is i  # horizontal
-		return winner if winner = same arr, (x, j) -> j // 3 is i # vertical
-	return winner if winner = same arr, (x, j) -> j % 3 is j // 3  # diagonals
-	return winner if winner = same arr, (x, j) -> j % 3 is 2 - j // 3
+		return winner if winner = same arr, (x, j) -> j % SIDE_LENGTH is i  # horizontal
+		return winner if winner = same arr, (x, j) -> j // SIDE_LENGTH is i # vertical
+	return winner if winner = same arr, (x, j) -> j % SIDE_LENGTH is j // SIDE_LENGTH  # diagonals
+	return winner if winner = same arr, (x, j) -> j % SIDE_LENGTH is SIDE_LENGTH - 1 - j // SIDE_LENGTH
 	return false
 
 minimax = (board, curPlayer, depth) ->
 	winner = checkWin(board)
-	return 20 - depth if winner is 1
-	return -20 + depth if winner is 2
-	return 0 if depth is 8
-	scores = (undefined for [0..8])
+	return BOARD_SIZE - depth if winner is 1
+	return -BOARD_SIZE + depth if winner is 2
+	return 0 if depth is BOARD_SIZE - 1
+	scores = (undefined for [0...BOARD_SIZE])
 	for elem, index in board
 		continue if elem
 		newBoard = board[..]
@@ -77,7 +80,7 @@ class Board
 		@resetElem.onclick = (e) => @recreate([])
 		@recreate([])
 
-		for i in [0...9]
+		for i in [0...BOARD_SIZE]
 			node = document.createElement 'li'
 			node.setAttribute 'id', "sq#{i}"
 			node.setAttribute 'class', 'square'
@@ -86,7 +89,7 @@ class Board
 
 	recreate: (pastMoves) ->
 		@pastMoves = []
-		@board = (0 for [0...9])
+		@board = (0 for [0...BOARD_SIZE])
 		@curPlayer = 1
 		@curWinner = 0
 		for move in pastMoves
@@ -122,8 +125,8 @@ class Board
 			node = document.getElementById "sq#{index}"
 			node.setAttribute "player", val
 			node.setAttribute "suggested", false
-			node.style.setProperty 'height', "calc(#{100/3}%-2px);"
-			node.style.setProperty 'width', "calc(#{100/3}%-2px);"
+			node.style.setProperty 'height', "calc(#{100/SIDE_LENGTH}%-2px);"
+			node.style.setProperty 'width', "calc(#{100/SIDE_LENGTH}%-2px);"
 			node.classList.remove 'prev'
 
 		if @pastMoves.length >= 1
@@ -139,8 +142,10 @@ class Board
 		document.getElementById("sq#{@suggestMove()}").setAttribute 'suggested', @curPlayer if not @checkWin() and not @catsGame()
 
 	suggestMove: ->
+		# if @pastMoves.length is 0
+		# 	return 0
 		d = Date.now()
-		scores = (undefined for [0..8])
+		scores = (undefined for [0...BOARD_SIZE])
 		for elem, index in @board
 			continue if elem
 			newBoard = @board[..]

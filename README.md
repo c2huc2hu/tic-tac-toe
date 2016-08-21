@@ -13,5 +13,3 @@ Install npm and python
 Install Python 2
 ` $ python -m SimpleHTTPServer`
 Go to localhost:8000 in any web browser
-
-TODO: Add an AI
