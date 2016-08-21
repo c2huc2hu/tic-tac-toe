@@ -27,6 +27,13 @@
 	border-color: yellow;
 }
 
+.square[suggested='1'] {
+	background-color: lightblue;
+}
+.square[suggested='2'] {
+	background-color: pink;
+}
+
 div[player='0'] {
 	color: grey;
 }
@@ -37,4 +44,10 @@ div[player='1'] {
 
 div[player='2'] {
 	color: red;
-}</style><h1>Tic Tac Toe App</h1><div id="info"></div><button id="undo">Undo</button><ul id="board"></ul><script src="app.js"></script>
+}
+
+button {
+	height: 50px;
+	padding-right: 10px;
+	width: 100px;
+}</style><h1>Tic Tac Toe App</h1><div id="info"></div><button id="undo">Undo</button><button id="reset">Reset</button><ul id="board"></ul><script src="app.js"></script>

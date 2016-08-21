@@ -27,6 +27,13 @@
 	border-color: yellow;
 }
 
+.square[suggested='1'] {
+	background-color: lightblue;
+}
+.square[suggested='2'] {
+	background-color: pink;
+}
+
 div[player='0'] {
 	color: grey;
 }
@@ -37,4 +44,10 @@ div[player='1'] {
 
 div[player='2'] {
 	color: red;
+}
+
+button {
+	height: 50px;
+	padding-right: 10px;
+	width: 100px;
 }
