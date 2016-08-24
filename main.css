@@ -9,8 +9,8 @@
 .square {
 	list-style: none;
 	display: inline-block;
-	height: calc(33.33333% - 6px);  /* have to account for border */
-	width: calc(33.3333% - 6px);
+	/* height: calc(33.33333% - 6px);  /* have to account for border */
+	/* width: calc(33.3333% - 6px); */
 	border: solid 3px grey;
 }
 

@@ -111,8 +111,8 @@
     return false;
   };
 
-  minimax = function(board, curPlayer, depth) {
-    var elem, index, k, len, newBoard, scores, winner;
+  minimax = function(board, curPlayer, depth, cache) {
+    var boardKey, elem, index, k, len, newBoard, scores, winner;
     winner = checkWin(board);
     if (winner === 1) {
       return BOARD_SIZE - depth;
@@ -138,7 +138,13 @@
       }
       newBoard = board.slice(0);
       newBoard[index] = curPlayer;
-      scores[index] = minimax(newBoard, curPlayer % 2 + 1, depth + 1);
+      boardKey = newBoard.join();
+      if (boardKey in cache) {
+        scores[index] = cache[boardKey];
+      } else {
+        scores[index] = minimax(newBoard, curPlayer % 2 + 1, depth + 1, cache);
+        cache[boardKey] = scores[index];
+      }
     }
     if (curPlayer === 1) {
       return max(scores);
@@ -147,6 +153,15 @@
       return min(scores);
     }
   };
+
+
+  /*
+  alphabeta = (board, curPlayer, depth, alpha, beta) ->
+  	winner = checkWin(board)
+  	return BOARD_SIZE - depth if winner is 1
+  	return -BOARD_SIZE + depth if winner is 2
+  	return 0 if depth is BOARD_SIZE - 1
+   */
 
   Board = (function() {
     function Board(element, infoElem, undoElem, resetElem) {
@@ -242,8 +257,8 @@
         node = document.getElementById("sq" + index);
         node.setAttribute("player", val);
         node.setAttribute("suggested", false);
-        node.style.setProperty('height', "calc(" + (100 / SIDE_LENGTH) + "%-2px);");
-        node.style.setProperty('width', "calc(" + (100 / SIDE_LENGTH) + "%-2px);");
+        node.style.height = "calc(" + (100 / SIDE_LENGTH) + "% - 6px)";
+        node.style.width = "calc(" + (100 / SIDE_LENGTH) + "% - 6px)";
         node.classList.remove('prev');
       }
       if (this.pastMoves.length >= 1) {
@@ -264,7 +279,7 @@
     };
 
     Board.prototype.suggestMove = function() {
-      var d, elem, index, k, len, newBoard, ref, scores;
+      var cache, d, elem, index, k, len, newBoard, ref, scores;
       d = Date.now();
       scores = (function() {
         var k, ref, results;
@@ -274,6 +289,7 @@
         }
         return results;
       })();
+      cache = {};
       ref = this.board;
       for (index = k = 0, len = ref.length; k < len; index = ++k) {
         elem = ref[index];
@@ -282,7 +298,7 @@
         }
         newBoard = this.board.slice(0);
         newBoard[index] = this.curPlayer;
-        scores[index] = minimax(newBoard, this.curPlayer % 2 + 1, this.pastMoves.length);
+        scores[index] = minimax(newBoard, this.curPlayer % 2 + 1, this.pastMoves.length, cache);
       }
       console.log("scores", Date.now() - d);
       if (this.curPlayer === 1) {

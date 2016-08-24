@@ -57,20 +57,35 @@ checkWin = (arr) ->
 	return winner if winner = same arr, (x, j) -> j % SIDE_LENGTH is SIDE_LENGTH - 1 - j // SIDE_LENGTH
 	return false
 
-minimax = (board, curPlayer, depth) ->
+minimax = (board, curPlayer, depth, cache) ->
 	winner = checkWin(board)
 	return BOARD_SIZE - depth if winner is 1
 	return -BOARD_SIZE + depth if winner is 2
 	return 0 if depth is BOARD_SIZE - 1
 	scores = (undefined for [0...BOARD_SIZE])
+
 	for elem, index in board
 		continue if elem
 		newBoard = board[..]
 		newBoard[index] = curPlayer
-		scores[index] = minimax newBoard, curPlayer % 2 + 1, depth + 1
+
+		boardKey = newBoard.join()
+		if boardKey of cache
+			scores[index] = cache[boardKey]
+		else
+			scores[index] = minimax newBoard, curPlayer % 2 + 1, depth + 1, cache
+			cache[boardKey] = scores[index]
+
 	return max(scores) if curPlayer is 1
 	return min(scores) if curPlayer is 2
 
+###
+alphabeta = (board, curPlayer, depth, alpha, beta) ->
+	winner = checkWin(board)
+	return BOARD_SIZE - depth if winner is 1
+	return -BOARD_SIZE + depth if winner is 2
+	return 0 if depth is BOARD_SIZE - 1
+###
 
 # initialize the board
 class Board
@@ -125,8 +140,8 @@ class Board
 			node = document.getElementById "sq#{index}"
 			node.setAttribute "player", val
 			node.setAttribute "suggested", false
-			node.style.setProperty 'height', "calc(#{100/SIDE_LENGTH}%-2px);"
-			node.style.setProperty 'width', "calc(#{100/SIDE_LENGTH}%-2px);"
+			node.style.height = "calc(#{100/SIDE_LENGTH}% - 6px)"
+			node.style.width = "calc(#{100/SIDE_LENGTH}% - 6px)"
 			node.classList.remove 'prev'
 
 		if @pastMoves.length >= 1
@@ -146,11 +161,12 @@ class Board
 		# 	return 0
 		d = Date.now()
 		scores = (undefined for [0...BOARD_SIZE])
+		cache = {}
 		for elem, index in @board
 			continue if elem
 			newBoard = @board[..]
 			newBoard[index] = @curPlayer
-			scores[index] = minimax newBoard, @curPlayer % 2 + 1, @pastMoves.length
+			scores[index] = minimax newBoard, @curPlayer % 2 + 1, @pastMoves.length, cache
 		console.log "scores", Date.now() - d
 		return maxIndex(scores) if @curPlayer is 1
 		return minIndex(scores) if @curPlayer is 2
