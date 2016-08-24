@@ -34,7 +34,7 @@ minIndex = (arr) ->
 		mn = elem if elem < mn
 	return result
 
-checkWin = (arr) ->
+checkWin = do ->
 	# arr: an array of elements
 	# filter: a function to filter the array, passed (element, index)
 	# returns: checks if all elements that pass the filter are the same. returns the element if they are
@@ -48,14 +48,17 @@ checkWin = (arr) ->
 				return false if val isnt first
 		return first
 
-	# note that we exclude when the 'winner' is empty cells because if (0) doesn't evaluate
-	# note the abuse of the assignment operator
-	for i in [0..2]
-		return winner if winner = same arr, (x, j) -> j % SIDE_LENGTH is i  # horizontal
-		return winner if winner = same arr, (x, j) -> j // SIDE_LENGTH is i # vertical
-	return winner if winner = same arr, (x, j) -> j % SIDE_LENGTH is j // SIDE_LENGTH  # diagonals
-	return winner if winner = same arr, (x, j) -> j % SIDE_LENGTH is SIDE_LENGTH - 1 - j // SIDE_LENGTH
-	return false
+	filterFunctions =
+		(((x, j) -> j % SIDE_LENGTH is i) for i in [0...SIDE_LENGTH])  # horizontal
+		.concat(((x, j) -> j // SIDE_LENGTH is i) for i in [0...SIDE_LENGTH]) # vertical
+		.concat (x, j) -> j % SIDE_LENGTH is j // SIDE_LENGTH  # diagonals
+		.concat (x, j) -> j % SIDE_LENGTH is SIDE_LENGTH - 1 - j // SIDE_LENGTH
+
+	return (arr) ->
+		for fcn in filterFunctions
+			winner = same arr, fcn
+			return winner if winner
+		return false
 
 minimax = (board, curPlayer, depth, cache) ->
 	winner = checkWin(board)
@@ -183,7 +186,7 @@ class Board
 
 	suggestMove: do ->
 		cache = {}
-		->
+		return ->
 			d = Date.now()
 			scores = (undefined for [0...BOARD_SIZE])
 			for elem, index in @board

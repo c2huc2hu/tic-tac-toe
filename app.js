@@ -68,8 +68,8 @@
     return result;
   };
 
-  checkWin = function(arr) {
-    var i, k, same, winner;
+  checkWin = (function() {
+    var filterFunctions, i, same;
     same = function(arr, filter) {
       var first, index, k, len, val;
       first = void 0;
@@ -86,30 +86,41 @@
       }
       return first;
     };
-    for (i = k = 0; k <= 2; i = ++k) {
-      if (winner = same(arr, function(x, j) {
-        return j % SIDE_LENGTH === i;
-      })) {
-        return winner;
+    filterFunctions = ((function() {
+      var k, ref, results;
+      results = [];
+      for (i = k = 0, ref = SIDE_LENGTH; 0 <= ref ? k < ref : k > ref; i = 0 <= ref ? ++k : --k) {
+        results.push(function(x, j) {
+          return j % SIDE_LENGTH === i;
+        });
       }
-      if (winner = same(arr, function(x, j) {
-        return Math.floor(j / SIDE_LENGTH) === i;
-      })) {
-        return winner;
+      return results;
+    })()).concat((function() {
+      var k, ref, results;
+      results = [];
+      for (i = k = 0, ref = SIDE_LENGTH; 0 <= ref ? k < ref : k > ref; i = 0 <= ref ? ++k : --k) {
+        results.push(function(x, j) {
+          return Math.floor(j / SIDE_LENGTH) === i;
+        });
       }
-    }
-    if (winner = same(arr, function(x, j) {
+      return results;
+    })()).concat(function(x, j) {
       return j % SIDE_LENGTH === Math.floor(j / SIDE_LENGTH);
-    })) {
-      return winner;
-    }
-    if (winner = same(arr, function(x, j) {
+    }).concat(function(x, j) {
       return j % SIDE_LENGTH === SIDE_LENGTH - 1 - Math.floor(j / SIDE_LENGTH);
-    })) {
-      return winner;
-    }
-    return false;
-  };
+    });
+    return function(arr) {
+      var fcn, k, len, winner;
+      for (k = 0, len = filterFunctions.length; k < len; k++) {
+        fcn = filterFunctions[k];
+        winner = same(arr, fcn);
+        if (winner) {
+          return winner;
+        }
+      }
+      return false;
+    };
+  })();
 
   minimax = function(board, curPlayer, depth, cache) {
     var boardKey, elem, index, k, len, newBoard, scores, winner;
