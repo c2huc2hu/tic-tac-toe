@@ -93,7 +93,6 @@ class Board
 		@element.onclick = (e) => @onClick(e)
 		@undoElem.onclick = (e) => @undo()
 		@resetElem.onclick = (e) => @recreate([])
-		@recreate([])
 
 		for i in [0...BOARD_SIZE]
 			node = document.createElement 'li'
@@ -101,6 +100,7 @@ class Board
 			node.setAttribute 'class', 'square'
 			node.order = i
 			@element.appendChild node
+		@recreate([])
 
 	recreate: (pastMoves) ->
 		@pastMoves = []
@@ -109,6 +109,7 @@ class Board
 		@curWinner = 0
 		for move in pastMoves
 			@playAt(move)
+		@render()
 
 	undo: ->
 		@pastMoves.pop()

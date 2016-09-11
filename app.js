@@ -185,7 +185,6 @@
           return _this.recreate([]);
         };
       })(this);
-      this.recreate([]);
       for (i = k = 0, ref = BOARD_SIZE; 0 <= ref ? k < ref : k > ref; i = 0 <= ref ? ++k : --k) {
         node = document.createElement('li');
         node.setAttribute('id', "sq" + i);
@@ -193,10 +192,11 @@
         node.order = i;
         this.element.appendChild(node);
       }
+      this.recreate([]);
     }
 
     Board.prototype.recreate = function(pastMoves) {
-      var k, len, move, results;
+      var k, len, move;
       this.pastMoves = [];
       this.board = (function() {
         var k, ref, results;
@@ -208,12 +208,11 @@
       })();
       this.curPlayer = 1;
       this.curWinner = 0;
-      results = [];
       for (k = 0, len = pastMoves.length; k < len; k++) {
         move = pastMoves[k];
-        results.push(this.playAt(move));
+        this.playAt(move);
       }
-      return results;
+      return this.render();
     };
 
     Board.prototype.undo = function() {
