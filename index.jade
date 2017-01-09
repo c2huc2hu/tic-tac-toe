@@ -3,12 +3,18 @@ style
 
 h1 Tic Tac Toe App
 
-
-div#info
 button#undo Undo
 button#reset Reset
+br
+div#info
 ul#board
 
-
+h3 Instructions
+p.half-page
+	| Click/ tap on a square to play there. The&nbsp;
+	span.light-blue-text.strong light blue
+	| &nbsp;or&nbsp;
+	span.light-red-text.strong light red
+	| &nbsp;are the AI's suggested moves for either player, NOT its move. The most recent move is outlined in yellow.
 
 script(src="app.js")

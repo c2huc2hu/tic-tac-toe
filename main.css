@@ -51,3 +51,18 @@ button {
 	padding-right: 10px;
 	width: 100px;
 }
+
+.light-blue-text {
+	color: lightblue;
+}
+.light-red-text {
+	color: pink;
+}
+
+.strong {
+	font-weight: bold;
+	background-color: grey;
+}
+.half-page {
+	max-width: 500px;
+}
